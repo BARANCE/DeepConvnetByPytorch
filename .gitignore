@@ -3,3 +3,5 @@
 *.pt
 *-ubyte
 *-ubyte.gz
+launch.json
+settings.json
