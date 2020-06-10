@@ -100,8 +100,6 @@ class DeepConvNet(BaseModel):
             hidden_size (int, optional): 7層目のAffieレイヤ適用後のノード数. Defaults to 50.
         """
         super().__init__()
-        #pylint: disable=no-member
-        self.device = torch.device('cuda')
 
         conv_params = [
             conv_param_1, conv_param_2, conv_param_3,
@@ -119,7 +117,7 @@ class DeepConvNet(BaseModel):
         # 入力サイズは半減する。
         # (割り切れない場合は、ceilで切り上げる)
         # なお今回、conv層では入力サイズは変化しない。
-        last_pool_size = torch.Tensor([28]).to(self.device)
+        last_pool_size = torch.Tensor([28])
         for _ in range(3):
             last_pool_size = last_pool_size * 0.5
             #pylint: disable=no-member

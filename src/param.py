@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pickle
+import json
 
 class Parameters:
     """ハイパーパラメータを管理する基底クラス
@@ -12,7 +12,7 @@ class Parameters:
             params (dict): ハイパーパラメータ一覧のkey-valueオブジェクト
         """
         self.params = params
-        self.default_path = './params.pkl'
+        self.default_path = './params.json'
     
     def get( self ):
         """保存されているハイパーパラメータを取得する
@@ -31,8 +31,8 @@ class Parameters:
         if path is None:
             path = self.default_path
         
-        with open( path, 'wb' ) as fd:
-            pickle.dump( self.params, fd )
+        with open( path, 'w' ) as fd:
+            json.dump( self.params, fd, indent=4 )
     
     def load( self, path=None ):
         """ファイルからハイパーパラメータを取得する
@@ -43,8 +43,8 @@ class Parameters:
         if path is None:
             path = self.default_path
         
-        with open( path, 'rb' ) as fd:
-            self.params = pickle.load(fd)
+        with open( path, 'r' ) as fd:
+            self.params = json.load(fd)
 
 
 class ParamDeepConvNet(Parameters):
@@ -56,7 +56,11 @@ class ParamDeepConvNet(Parameters):
         params = {
             'learning_rate': 0.001,
             'batch_size': 100,
-            'max_epoch': 5
+            'max_epoch': 1,
+            'weight_path': './model_deepconvnet.pth',
+            'use_weight': False,
+            'plot_path': './plot_deepconvnet.png',
+            'device': 'cpu'
         }
         super().__init__( params )
-        self.default_path = './params_deepconvnet.pkl'
+        self.default_path = './params_deepconvnet.json'

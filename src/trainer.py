@@ -1,21 +1,28 @@
 # -*- coding: utf-8 -*-
 
 import time
+import numpy as np
+import matplotlib.pyplot as plt
 import torch
 
 class Trainer:
     """ネットワークモデルを使用して、学習と評価を行う学習器クラス
     """
-    def __init__( self, model, optimizer, creterion ):
+    def __init__( self, model, optimizer, creterion, device='cpu' ):
         """コンストラクタ
 
         Args:
             model (BaseModel): ネットワークモデル
             optimizer (torch.optim.Optimizer): 最適化手法
             creterion (torch.nn.Loss): 損失関数
+            device (str, optional): 演算を実行するデバイス. Defaults to 'cpu'.
         """
         #pylint: disable=no-member
-        self.device = torch.device('cuda')
+        self.device = None
+        if device == 'cuda':
+            self.device = torch.device('cuda')
+        else:
+            self.device = torch.device('cpu')
         
         self.model = model.to( self.device ) # ネットワークモデル
         self.optimizer = optimizer # 最適化手法
@@ -132,5 +139,20 @@ class Trainer:
         
         return val_loss, val_acc            
     
-    def plot ( self, ylim=None ):
-        pass
+    def plot ( self, ylim=None, path=None ):
+        """学習結果をmatplotlibでグラフ化し表示またはファイルに保存する
+
+        Args:
+            ylim (list, optional): y軸の表示範囲. Defaults to None.
+            path (str, optional): グラフファイルの出力先パス. Noneの場合はファイル出力せず画面に表示する. Defaults to None.
+        """
+        x = np.arange(len(self.loss_list))
+        if ylim is not None:
+            plt.ylim(*ylim)
+        plt.plot( x, self.loss_list, label='train' )
+        plt.xlabel('iterations (x' + str(self.eval_interval) + ')')
+        plt.ylabel('loss')
+        if path is not None:
+            plt.savefig(path)
+        else:
+            plt.show()

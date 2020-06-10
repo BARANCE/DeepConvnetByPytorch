@@ -1,0 +1,9 @@
+{
+    "learning_rate": 0.001,
+    "batch_size": 100,
+    "max_epoch": 20,
+    "weight_path": "./model_deepconvnet.pth",
+    "use_weight": false,
+    "plot_path": "./plot_deepconvnet.png",
+    "device": "cuda"
+}
