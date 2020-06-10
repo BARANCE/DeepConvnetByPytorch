@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 import torch
 
 class Trainer:
@@ -19,6 +20,9 @@ class Trainer:
         self.model = model.to( self.device ) # ネットワークモデル
         self.optimizer = optimizer # 最適化手法
         self.creterion = creterion # 損失関数
+
+        self.loss_list = []
+        self.eval_interval = None
     
     def fit(
         self,
@@ -36,7 +40,9 @@ class Trainer:
         # 1epochあたりの反復回数
         iter_per_epoch = len(train_loader)
         # 学習状態確認用にログ出力するための間隔を決める値
-        eval_interval = max(int(iter_per_epoch / 10), 1)
+        self.eval_interval = max(int(iter_per_epoch / 10), 1)
+        # 学習開始時の時間(ログのタイムスタンプに使用)
+        start_time = time.time()
         
         # データセットごとの学習をmax_epoch回繰り返し行う
         for epoch in range( max_epoch ):
@@ -64,9 +70,15 @@ class Trainer:
                 # このiterationでの損失合計値を追加
                 running_loss += loss.item()
                 # eval_interval回数反復実行後、学習進捗をログ出力
-                if idx_input % eval_interval == (eval_interval - 1):
-                    print('[%d, %5d] loss: %.3f' % (epoch + 1, idx_input + 1, running_loss / eval_interval))
-                running_loss = 0.0
+                if idx_input % self.eval_interval == (self.eval_interval - 1):
+                    avg_loss = running_loss / self.eval_interval
+                    elapsed_time = time.time() - start_time
+                    print(
+                        '| epoch: %3d | iter: %5d | time: %5d[s] | loss: %.3f'
+                        % (epoch + 1, idx_input + 1, elapsed_time, avg_loss)
+                    )
+                    self.loss_list.append(float(avg_loss))
+                    running_loss = 0.0
         
         print('Finished Training')
     
@@ -119,4 +131,6 @@ class Trainer:
         print('val_loss: %.3f, val_acc: %.3f' % (val_loss, val_acc))
         
         return val_loss, val_acc            
-        
+    
+    def plot ( self, ylim=None ):
+        pass
