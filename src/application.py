@@ -3,11 +3,21 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from src.network import DeepConvNet
-from src.trainer import Trainer
-from src.provide import MnistProvider
-from src.view import ImgViewer
-from src.param import ParamDeepConvNet
+try:
+    # main.pyから起動した場合のimport
+    from src.network import DeepConvNet
+    from src.trainer import Trainer
+    from src.provide import MnistProvider
+    from src.view import ImgViewer
+    from src.param import ParamDeepConvNet
+except ImportError:
+    # このファイルから起動した場合のimport
+    from network import DeepConvNet
+    from trainer import Trainer
+    from provide import MnistProvider
+    from view import ImgViewer
+    from param import ParamDeepConvNet
+    
 
 class Application:
     """アプリケーション本体を実現するクラス
