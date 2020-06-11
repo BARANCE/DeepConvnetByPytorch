@@ -17,7 +17,6 @@ except ImportError:
     from provide import MnistProvider
     from view import ImgViewer
     from param import ParamDeepConvNet
-    
 
 class Application:
     """アプリケーション本体を実現するクラス
